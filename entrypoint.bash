@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Copyright (c) 2024 Alex Speranza.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 # Safeguard for incomplete downloads (the entrypoint function is run only when all of its body is already downloaded)
 entrypoint()
 {
