@@ -59,7 +59,7 @@ if [ ! -f "${TMP_CONFIG_FILE}" ]; then
     dialog_width="100"
     exec 3<> "${TMP_CONFIG_FILE}"
     dialog --erase-on-exit \
-        --separate-widget "" \
+        --separate-widget "," \
         --output-fd 3 \
         --ok-label "Next" \
         --inputbox "Insert the git name you want to use" "${dialog_height}" "${dialog_width}" \
