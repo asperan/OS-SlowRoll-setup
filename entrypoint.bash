@@ -30,7 +30,7 @@ PACKAGES=(
 USER_FONTS_DIR="${XDG_DATA_HOME:-"${HOME}/.local/share"}/fonts"
 FONT_VARIANT="IosevkaTermSS04"
 FONT_TARGET_DIR="${USER_FONTS_DIR}/Unknown Vendor/TrueType/${FONT_VARIANT}"
-TMP_CONFIG_FILE="/tmp/inputbox_output"
+TMP_CONFIG_FILE="/tmp/configuration_output"
 TMP_CONFIG_RECAP_FILE="/tmp/config_recap"
 
 #### HELPERS
