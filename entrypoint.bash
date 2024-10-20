@@ -31,6 +31,7 @@ USER_FONTS_DIR="${XDG_DATA_HOME:-"${HOME}/.local/share"}/fonts"
 FONT_VARIANT="IosevkaTermSS04"
 FONT_TARGET_DIR="${USER_FONTS_DIR}/Unknown Vendor/TrueType/${FONT_VARIANT}"
 TMP_CONFIG_FILE="/tmp/inputbox_output"
+TMP_CONFIG_RECAP_FILE="/tmp/config_recap"
 
 #### HELPERS
 
@@ -82,12 +83,13 @@ fi
 #### Confirmation form
 echo "Parsing configuration..."
 IFS="," read -r git_name git_email rest < <(cat "${TMP_CONFIG_FILE}")
-confirmation_dialog_height="100"
-confirmation_dialog_width="100"
-dialog --title "Confirm configuration?" --yesno <<EOF ${confirmation_dialog_height} ${confirmation_dialog_width}
+cat <<EOF > "${TMP_CONFIG_RECAP_FILE}"
 Git name: ${git_name}
 Git email: ${git_email}
 EOF
+confirmation_dialog_height="100"
+confirmation_dialog_width="100"
+dialog --title "Confirm configuration?" --yesno "$(cat "${TMP_CONFIG_RECAP_FILE}")" "${confirmation_dialog_height}" "${confirmation_dialog_width}"
 confirmation_exit_code="$?"
 echo ""
 case "${confirmation_exit_code}" in
@@ -102,6 +104,7 @@ case "${confirmation_exit_code}" in
     ;;
 esac
 echo "Configuration confirmed."
+rm "${TMP_CONFIG_RECAP_FILE}"
 #### START SETUP
 echo "Starting setup phase..."
 update_system
