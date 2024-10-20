@@ -53,6 +53,7 @@ clone_git_repository() {
 }
 
 #### START
+echo "Updating system..."
 update_system
 
 install_packages "dialog"
