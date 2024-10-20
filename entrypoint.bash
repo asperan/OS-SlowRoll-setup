@@ -53,7 +53,9 @@ clone_git_repository() {
 }
 
 #### Configuration form
+echo "Starting configuration phase..."
 if [ ! -f "${TMP_CONFIG_FILE}" ]; then
+    echo "Previous configuration not found. Opening configuration form..."
     # TODO: calc dialog_height and dialog_width
     dialog_height="30"
     dialog_width="100"
@@ -72,9 +74,12 @@ if [ ! -f "${TMP_CONFIG_FILE}" ]; then
         >&2 echo "Dialog cancelled. Exiting script"
         exit 1
     fi
+else
+    echo "Previous configuration found. Configuration form skipped."
 fi
 
 #### Confirmation form
+echo "Parsing configuration..."
 IFS="," read -r git_name git_email rest < <(cat "${TMP_CONFIG_FILE}")
 confirmation_dialog_height="100"
 confirmation_dialog_width="100"
@@ -95,8 +100,9 @@ case "${confirmation_exit_code}" in
     *)
     ;;
 esac
-
+echo "Configuration confirmed."
 #### START SETUP
+echo "Starting setup phase..."
 update_system
 
 ## Packages
