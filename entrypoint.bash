@@ -70,9 +70,15 @@ if [ ! -f "${TMP_CONFIG_FILE}" ]; then
         --separate-widget "," \
         --output-fd 3 \
         --ok-label "Next" \
-        --inputbox "Insert the git name you want to use" "${dialog_height}" "${dialog_width}" \
+        --inputbox "Insert the git name you want to use" "${dialog_height}" "${dialog_width}" "${USER}" \
         --and-widget \
-        --inputbox "Insert the git email you want to use" "${dialog_height}" "${dialog_width}"
+        --inputbox "Insert the git email you want to use" "${dialog_height}" "${dialog_width}" \
+        --and-widget \
+        --inputbox "Insert your dotfiles repository" "${dialog_height}" "${dialog_width}" "https://github.com/" \
+        --and-widget \
+        --inputbox "Insert the dotfiles repository ref to clone" "${dialog_height}" "${dialog_width}" "main" \
+        --and-widget \
+        --inputbox "Insert the path where to clone the dotfile repository" "${dialog_height}" "${dialog_width}"
     dialog_exit_status="$?"
     exec 3>&-
     echo "" >> "${TMP_CONFIG_FILE}"
@@ -87,10 +93,13 @@ fi
 
 #### Confirmation form
 echo "Parsing configuration..."
-IFS="," read -r git_name git_email rest < <(cat "${TMP_CONFIG_FILE}")
+IFS="," read -r git_name git_email dotfiles_repo dotfiles_ref dotfiles_dest rest < <(cat "${TMP_CONFIG_FILE}")
 cat <<EOF > "${TMP_CONFIG_RECAP_FILE}"
 Git name: ${git_name}
 Git email: ${git_email}
+Dotfiles repository: ${dotfiles_repo}
+Dotfiles repository ref: ${dotfiles_ref}
+Dotfiles repository destination: ${dotfiles_dest}
 EOF
 confirmation_dialog_height="100"
 confirmation_dialog_width="100"
