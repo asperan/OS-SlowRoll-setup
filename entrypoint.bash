@@ -23,7 +23,6 @@ PACKAGES=(
     "ripgrep" "ripgrep-bash-completion"
     "nnn" "nnn-bash-completion"
     "yq" "yq-bash-completion"
-    "dialog"
     "stow"
 )
 
@@ -52,6 +51,11 @@ clone_git_repository() {
     mkdir -p "$2"
     git clone "$1" "$2"
 }
+
+#### START
+update_system
+
+install_packages "dialog"
 
 #### Configuration form
 echo "Starting configuration phase..."
