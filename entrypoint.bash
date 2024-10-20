@@ -109,6 +109,7 @@ case "${confirmation_exit_code}" in
 esac
 echo "Configuration confirmed."
 rm "${TMP_CONFIG_RECAP_FILE}"
+
 #### START SETUP
 echo "Starting setup phase..."
 update_system
