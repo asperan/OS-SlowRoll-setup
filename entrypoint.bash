@@ -112,7 +112,6 @@ rm "${TMP_CONFIG_RECAP_FILE}"
 
 #### START SETUP
 echo "Starting setup phase..."
-update_system
 
 ## Packages
 install_packages "${PACKAGES[@]}"
