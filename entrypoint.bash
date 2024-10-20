@@ -69,6 +69,7 @@ if [ ! -f "${TMP_CONFIG_FILE}" ]; then
         --inputbox "Insert the git email you want to use" "${dialog_height}" "${dialog_width}"
     dialog_exit_status="$?"
     exec 3>&-
+    echo "" >> "${TMP_CONFIG_FILE}"
     echo ""
     if [ "$dialog_exit_status" -eq "1" ]; then
         >&2 echo "Dialog cancelled. Exiting script"
