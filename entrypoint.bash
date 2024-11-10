@@ -137,13 +137,14 @@ install_packages "wezterm"
 ## NVIM
 install_packages "neovim"
 
-# Font
-mkdir -p "${FONT_TARGET_DIR}"
-eval $(curl -fsSL -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/asperan/nerdfont-iosevka/contents/${FONT_VARIANT} | jq -r 'map({"name": .name, "download_url": .download_url })[] | "curl -fsSL -o \"${FONT_TARGET_DIR}/" + .name + "\" \"" + .download_url + "\" ;"')
-
 ## Git user config
 git config --global user.name "${CONFIG_GIT_USER_NAME}"
 git config --global user.email "${CONFIG_GIT_USER_EMAIL}"
+
+# Font
+mkdir -p "${FONT_TARGET_DIR}"
+git clone --depth 1 "https://github.com/Iosevka-NerdFont/${FONT_VARIANT}.git" "${FONT_TARGET_DIR}"
+fc-cache "${FONT_TARGET_DIR}/${FONT_VARIANT}"
 
 # TODO: ask for stow repository, clone it somewhere (ask for it?) and stow all packages
 # Stow target is always "${HOME}"
