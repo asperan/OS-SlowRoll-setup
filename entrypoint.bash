@@ -34,6 +34,7 @@ PACKAGES=(
 
 TMP_CONFIG_FILE="/tmp/configuration_output"
 TMP_CONFIG_RECAP_FILE="/tmp/config_recap"
+TMP_STOW_LIST="/tmp/stow-list"
 
 SUDO_USER_GROUP="$(su - "${SUDO_USER}" -c groups)"
 SUDO_USER_HOME="/home/${SUDO_USER}"
@@ -169,9 +170,19 @@ else
     ( cd "${dotfiles_dest}" && git pull )
 fi
 
-dialog --title "Select Stow packages" \
-    --checklist "Select the packages to stow from your dotfiles into your home:" "${dialog_height}" "${dialog_width}" \
+exec 3<> "${TMP_STOW_LIST}"
+dialog --erase-on-exit \
+    --output-fd 3 \
+    --title "Select Stow packages" \
+    --checklist "Select the packages to stow from your dotfiles into your home:" "${dialog_height}" "${dialog_width}" "20" \
     $(for package in "${dotfiles_dest}"/*; do echo "${package##*/} ${package##*/} off"; done )
+dialog_exit_status="$?"
+exec 3>&-
+echo ""
+if [ "$dialog_exit_status" -eq "1" ]; then
+    >&2 echo "Dialog cancelled. Exiting script"
+    exit 1
+fi
 
 # TODO: add Grub theme (BSOL)
 } && entrypoint
