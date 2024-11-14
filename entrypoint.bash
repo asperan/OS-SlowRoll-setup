@@ -182,7 +182,8 @@ if [ "$dialog_exit_status" -eq "1" ]; then
     exit 1
 fi
 
-su - "${SUDO_USER}" -c stow -d "${dotfiles_dest}" -t "${SUDO_USER_HOME}" --adopt --dotfiles -v $(cat "${TMP_STOW_LIST}")
+stow -d "${dotfiles_dest}" -t "${SUDO_USER_HOME}" --adopt --dotfiles -v $(cat "${TMP_STOW_LIST}")
+chown -R "${SUDO_USER}:${SUDO_USER_GROUP}" "${SUDO_USER_HOME}"
 ( cd "${dotfiles_dest}" && git restore . )
 
 # TODO: add Grub theme (BSOL)
