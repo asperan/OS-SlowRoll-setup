@@ -139,8 +139,8 @@ install_packages "wezterm"
 install_packages "neovim"
 
 ## Git user config
-git config --global user.name "${CONFIG_GIT_USER_NAME}"
-git config --global user.email "${CONFIG_GIT_USER_EMAIL}"
+git config --global user.name "${git_name}"
+git config --global user.email "${git_email}"
 
 # Font
 mkdir -p "${FONT_TARGET_DIR}"
