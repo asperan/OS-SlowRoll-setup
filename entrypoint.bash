@@ -35,6 +35,7 @@ PACKAGES=(
 TMP_CONFIG_FILE="/tmp/configuration_output"
 TMP_CONFIG_RECAP_FILE="/tmp/config_recap"
 
+SUDO_USER_GROUP="$(su - "${SUDO_USER}" -c groups)"
 SUDO_USER_HOME="/home/${SUDO_USER}"
 SUDO_USER_XDG_DATA_HOME="$(su - "${SUDO_USER}" -c env | grep 'XDG_DATA_HOME' || true)"
 USER_FONTS_DIR="${SUDO_USER_XDG_DATA_HOME:-"${SUDO_USER_HOME}/.local/share"}/fonts"
@@ -151,12 +152,22 @@ git config --global user.email "${git_email}"
 
 # Font
 mkdir -p "${FONT_TARGET_DIR}"
-git clone --depth 1 "https://github.com/Iosevka-NerdFont/${FONT_VARIANT}.git" "${FONT_TARGET_DIR}"
+if [ "$(ls "${FONT_TARGET_DIR}")" == "" ] ; then
+    git clone --depth 1 "https://github.com/Iosevka-NerdFont/${FONT_VARIANT}.git" "${FONT_TARGET_DIR}"
+    chown -R "${SUDO_USER}:${SUDO_USER_GROUP}" "${FONT_TARGET_DIR}"
+else
+    ( cd "${FONT_TARGET_DIR}" && git pull )
+fi
 fc-cache "${FONT_TARGET_DIR}/${FONT_VARIANT}"
 
 # TODO: ask for stow repository, clone it somewhere (ask for it?) and stow all packages
 # Stow target is always "${HOME}"
-git clone --depth 1 --branch "${dotfiles_ref}" "${dotfiles_repo}" "${dotfiles_dest}"
+if [ "$(ls "${dotfiles_dest}")" == "" ] ; then
+    git clone --depth 1 --branch "${dotfiles_ref}" "${dotfiles_repo}" "${dotfiles_dest}"
+    chown -R "${SUDO_USER}:${SUDO_USER_GROUP}" "${dotfiles_dest}"
+else
+    ( cd "${dotfiles_dest}" && git pull )
+fi
 
 # TODO: add Grub theme (BSOL)
 } && entrypoint
