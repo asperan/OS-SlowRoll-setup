@@ -156,6 +156,7 @@ fc-cache "${FONT_TARGET_DIR}/${FONT_VARIANT}"
 
 # TODO: ask for stow repository, clone it somewhere (ask for it?) and stow all packages
 # Stow target is always "${HOME}"
+git clone --depth 1 --branch "${dotfiles_ref}" "${dotfiles_repo}" "${dotfiles_dest}"
 
 # TODO: add Grub theme (BSOL)
 } && entrypoint
