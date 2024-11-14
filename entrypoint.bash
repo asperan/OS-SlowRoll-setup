@@ -64,9 +64,6 @@ clone_git_repository() {
 }
 
 #### START
-echo "Updating system..."
-update_system
-
 install_packages "dialog"
 
 #### Configuration form
@@ -133,6 +130,9 @@ rm "${TMP_CONFIG_RECAP_FILE}"
 
 #### START SETUP
 echo "Starting setup phase..."
+
+echo "Updating system..."
+update_system
 
 ## Packages
 install_packages "${PACKAGES[@]}"
