@@ -161,8 +161,6 @@ else
 fi
 fc-cache "${FONT_TARGET_DIR}/${FONT_VARIANT}"
 
-# TODO: ask for stow repository, clone it somewhere (ask for it?) and stow all packages
-# Stow target is always "${HOME}"
 if [ "$(ls "${dotfiles_dest}")" == "" ] ; then
     git clone --depth 1 --branch "${dotfiles_ref}" "${dotfiles_repo}" "${dotfiles_dest}"
     chown -R "${SUDO_USER}:${SUDO_USER_GROUP}" "${dotfiles_dest}"
@@ -174,7 +172,7 @@ exec 3<> "${TMP_STOW_LIST}"
 dialog --erase-on-exit \
     --output-fd 3 \
     --title "Select Stow packages" \
-    --checklist "Select the packages to stow from your dotfiles into your home:" "${dialog_height}" "${dialog_width}" "20" \
+    --checklist "Select the packages to stow from your dotfiles into your home directory:" "${dialog_height}" "${dialog_width}" "20" \
     $(for package in "${dotfiles_dest}"/*; do echo "${package##*/} ${package##*/} off"; done )
 dialog_exit_status="$?"
 exec 3>&-
