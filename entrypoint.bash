@@ -10,6 +10,11 @@ entrypoint()
 {
 set -euo pipefail
 
+if [ "${USER}" != "root" ] ; then
+    >&2 echo "This script must be run as root."
+    exit 1
+fi
+
 #### VARIABLES
 
 PACKAGES=(
@@ -30,7 +35,9 @@ PACKAGES=(
 TMP_CONFIG_FILE="/tmp/configuration_output"
 TMP_CONFIG_RECAP_FILE="/tmp/config_recap"
 
-USER_FONTS_DIR="${XDG_DATA_HOME:-"${HOME}/.local/share"}/fonts"
+SUDO_USER_HOME="/home/${SUDO_USER}"
+SUDO_USER_XDG_DATA_HOME="$(su - "${SUDO_USER}" -c env | grep 'XDG_DATA_HOME' || true)"
+USER_FONTS_DIR="${SUDO_USER_XDG_DATA_HOME:-"${SUDO_USER_HOME}/.local/share"}/fonts"
 
 FONT_VARIANT="IosevkaTermSS04"
 FONT_TARGET_DIR="${USER_FONTS_DIR}/Unknown Vendor/TrueType/${FONT_VARIANT}"
