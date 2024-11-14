@@ -184,5 +184,7 @@ if [ "$dialog_exit_status" -eq "1" ]; then
     exit 1
 fi
 
+stow -d "${dotfiles_dest}" -t "${SUDO_USER_HOME}" --dotfiles -v $(cat "${TMP_STOW_LIST}")
+
 # TODO: add Grub theme (BSOL)
 } && entrypoint
