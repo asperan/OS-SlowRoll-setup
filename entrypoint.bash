@@ -43,6 +43,9 @@ USER_FONTS_DIR="${SUDO_USER_XDG_DATA_HOME:-"${SUDO_USER_HOME}/.local/share"}/fon
 FONT_VARIANT="IosevkaTermSS04"
 FONT_TARGET_DIR="${USER_FONTS_DIR}/Unknown Vendor/TrueType/${FONT_VARIANT}"
 
+# TODO: calc dialog_height and dialog_width
+dialog_height="30"
+dialog_width="100"
 #### HELPERS
 
 update_system()
@@ -70,9 +73,6 @@ install_packages "dialog"
 echo "Starting configuration phase..."
 if [ ! -f "${TMP_CONFIG_FILE}" ]; then
     echo "Previous configuration not found. Opening configuration form..."
-    # TODO: calc dialog_height and dialog_width
-    dialog_height="30"
-    dialog_width="100"
     exec 3<> "${TMP_CONFIG_FILE}"
     dialog --erase-on-exit \
         --separate-widget "," \
@@ -168,6 +168,10 @@ if [ "$(ls "${dotfiles_dest}")" == "" ] ; then
 else
     ( cd "${dotfiles_dest}" && git pull )
 fi
+
+dialog --title "Select Stow packages" \
+    --checklist "Select the packages to stow from your dotfiles into your home:" "${dialog_height}" "${dialog_width}" \
+    $(for package in "${dotfiles_dest}"/*; do echo "${package##*/} ${package##*/} off"; done )
 
 # TODO: add Grub theme (BSOL)
 } && entrypoint
