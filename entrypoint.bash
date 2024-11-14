@@ -23,6 +23,7 @@ PACKAGES=(
     "ripgrep" "ripgrep-bash-completion"
     "nnn" "nnn-bash-completion"
     "yq" "yq-bash-completion"
+    "hyperfine" "hyperfine-bash-completion"
     "stow"
 )
 
