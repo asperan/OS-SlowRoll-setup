@@ -30,6 +30,7 @@ PACKAGES=(
     "yq" "yq-bash-completion"
     "hyperfine" "hyperfine-bash-completion"
     "stow"
+    "tuigreet" "greetd" "system-user-greeter"
 )
 
 TMP_CONFIG_FILE="/tmp/configuration_output"
