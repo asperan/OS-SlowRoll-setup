@@ -166,7 +166,7 @@ if [ "$(ls "${dotfiles_dest}")" == "" ] ; then
     git clone --depth 1 --branch "${dotfiles_ref}" "${dotfiles_repo}" "${dotfiles_dest}"
     chown -R "${SUDO_USER}:${SUDO_USER_GROUP}" "${dotfiles_dest}"
 else
-    ( cd "${dotfiles_dest}" && git pull )
+    ( cd "${dotfiles_dest}" && git checkout "${dotfiles_ref}" && git pull )
 fi
 
 exec 3<> "${TMP_STOW_LIST}"
