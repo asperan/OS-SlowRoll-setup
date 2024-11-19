@@ -176,7 +176,7 @@ while [ "${continue_asking_stow_packages}" == "yes" ]; do
     dialog --erase-on-exit \
         --output-fd 3 \
         --title "Select Stow packages" \
-        --checklist "Select the packages to stow from your dotfiles into your home directory:" "${dialog_height}" "${dialog_width}" "20" \
+        --checklist "Select the packages to stow from your dotfiles (select none to exit):" "${dialog_height}" "${dialog_width}" "20" \
         $(for package in "${dotfiles_dest}"/*; do echo "${package##*/} ${package##*/} off"; done )
     dialog_exit_status="$?"
     exec 3>&-
@@ -206,6 +206,7 @@ while [ "${continue_asking_stow_packages}" == "yes" ]; do
         ( cd "${dotfiles_dest}" && git restore . )
         truncate -s 0 "${TMP_STOW_LIST}" "${TMP_STOW_TARGET}"
     else
+        echo "No stow packages selected. Exiting dialog."
         continue_asking_stow_packages="no"
     fi
 done
