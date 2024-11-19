@@ -36,6 +36,7 @@ PACKAGES=(
 TMP_CONFIG_FILE="/tmp/configuration_output"
 TMP_CONFIG_RECAP_FILE="/tmp/config_recap"
 TMP_STOW_LIST="/tmp/stow-list"
+TMP_STOW_TARGET="/tmp/stow-target"
 
 SUDO_USER_GROUP="$(su - "${SUDO_USER}" -c groups)"
 SUDO_USER_HOME="/home/${SUDO_USER}"
@@ -169,23 +170,44 @@ else
     ( cd "${dotfiles_dest}" && git checkout "${dotfiles_ref}" && git pull )
 fi
 
-exec 3<> "${TMP_STOW_LIST}"
-dialog --erase-on-exit \
-    --output-fd 3 \
-    --title "Select Stow packages" \
-    --checklist "Select the packages to stow from your dotfiles into your home directory:" "${dialog_height}" "${dialog_width}" "20" \
-    $(for package in "${dotfiles_dest}"/*; do echo "${package##*/} ${package##*/} off"; done )
-dialog_exit_status="$?"
-exec 3>&-
-echo ""
-if [ "$dialog_exit_status" -eq "1" ]; then
-    >&2 echo "Dialog cancelled. Exiting script"
-    exit 1
-fi
-
-stow -d "${dotfiles_dest}" -t "${SUDO_USER_HOME}" --adopt --dotfiles -v $(cat "${TMP_STOW_LIST}")
-chown -R "${SUDO_USER}:${SUDO_USER_GROUP}" "${SUDO_USER_HOME}"
-( cd "${dotfiles_dest}" && git restore . )
+continue_asking_stow_packages="yes"
+while [ "${continue_asking_stow_packages}" == "yes" ]; do
+    exec 3<> "${TMP_STOW_LIST}"
+    dialog --erase-on-exit \
+        --output-fd 3 \
+        --title "Select Stow packages" \
+        --checklist "Select the packages to stow from your dotfiles into your home directory:" "${dialog_height}" "${dialog_width}" "20" \
+        $(for package in "${dotfiles_dest}"/*; do echo "${package##*/} ${package##*/} off"; done )
+    dialog_exit_status="$?"
+    exec 3>&-
+    echo ""
+    if [ "$dialog_exit_status" -eq "1" ]; then
+        >&2 echo "Dialog cancelled. Exiting script"
+        exit 1
+    fi
+    if [ -n "$(cat  "${TMP_STOW_LIST}")" ]; then
+        exec 3<> "${TMP_STOW_TARGET}"
+        dialog --erase-on-exit \
+            --output-fd 3 \
+            --title "Stow target location" \
+            --inputbox "Select the base directory where selected packages shall be stowed:" "${dialog_height}" "${dialog_width}" "${SUDO_USER_HOME}"
+        dialog_exit_status="$?"
+        exec 3>&-
+        echo ""
+        if [ "$dialog_exit_status" -eq "1" ]; then
+            >&2 echo "Dialog cancelled. Exiting script"
+            exit 1
+        fi
+        stow_target="$(cat "${TMP_STOW_TARGET}")"
+        stow -d "${dotfiles_dest}" -t "${stow_target}" --adopt --dotfiles -v $(cat "${TMP_STOW_LIST}")
+        if grep "/home/${SUDO_USER}" <(echo "${stow_target}") ; then
+          chown -R "${SUDO_USER}:${SUDO_USER_GROUP}" "${stow_target}"
+        fi
+        ( cd "${dotfiles_dest}" && git restore . )
+    else
+        continue_asking_stow_packages="no"
+    fi
+done
 
 # TODO: add Grub theme (BSOL)
 } && entrypoint
