@@ -204,6 +204,7 @@ while [ "${continue_asking_stow_packages}" == "yes" ]; do
           chown -R "${SUDO_USER}:${SUDO_USER_GROUP}" "${stow_target}"
         fi
         ( cd "${dotfiles_dest}" && git restore . )
+        truncate -s 0 "${TMP_STOW_LIST}" "${TMP_STOW_TARGET}"
     else
         continue_asking_stow_packages="no"
     fi
