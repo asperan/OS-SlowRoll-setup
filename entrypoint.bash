@@ -81,7 +81,7 @@ if [ ! -f "${TMP_CONFIG_FILE}" ]; then
         --separate-widget "," \
         --output-fd 3 \
         --ok-label "Next" \
-        --inputbox "Insert the git name you want to use" "${dialog_height}" "${dialog_width}" "${USER}" \
+        --inputbox "Insert the git name you want to use" "${dialog_height}" "${dialog_width}" "${SUDO_USER}" \
         --and-widget \
         --inputbox "Insert the git email you want to use" "${dialog_height}" "${dialog_width}" \
         --and-widget \
