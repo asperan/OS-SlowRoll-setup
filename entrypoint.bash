@@ -89,7 +89,9 @@ if [ ! -f "${TMP_CONFIG_FILE}" ]; then
         --and-widget \
         --inputbox "Insert the dotfiles repository ref to clone" "${dialog_height}" "${dialog_width}" "main" \
         --and-widget \
-        --inputbox "Insert the path where to clone the dotfile repository" "${dialog_height}" "${dialog_width}"
+        --inputbox "Insert the path where to clone the dotfile repository" "${dialog_height}" "${dialog_width}" \
+        --and-widget \
+        --inputbox "Insert the hostname to use" "${dialog_height}" "${dialog_width}" "${SUDO_USER}-pc"
     dialog_exit_status="$?"
     exec 3>&-
     echo "" >> "${TMP_CONFIG_FILE}"
@@ -104,13 +106,14 @@ fi
 
 #### Confirmation form
 echo "Parsing configuration..."
-IFS="," read -r git_name git_email dotfiles_repo dotfiles_ref dotfiles_dest rest < <(cat "${TMP_CONFIG_FILE}")
+IFS="," read -r git_name git_email dotfiles_repo dotfiles_ref dotfiles_dest hostname rest < <(cat "${TMP_CONFIG_FILE}")
 cat <<EOF > "${TMP_CONFIG_RECAP_FILE}"
 Git name: ${git_name}
 Git email: ${git_email}
 Dotfiles repository: ${dotfiles_repo}
 Dotfiles repository ref: ${dotfiles_ref}
 Dotfiles repository destination: ${dotfiles_dest}
+Hostname: ${hostname}
 EOF
 confirmation_dialog_height="100"
 confirmation_dialog_width="100"
@@ -148,6 +151,10 @@ install_packages "wezterm"
 
 ## NVIM
 install_packages "neovim"
+
+## Hostname configuration
+hostnamectl hostname "${hostname}"
+sed -i -E 's/((127\.0\.0\.1|::1)[[:space:]]+localhost )[a-zA-Z.](.*)/\1'"${hostname}"'\3/' /etc/hosts
 
 ## Git user config
 git config --global user.name "${git_name}"
