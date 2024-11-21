@@ -154,7 +154,7 @@ install_packages "neovim"
 
 ## Hostname configuration
 hostnamectl hostname "${hostname}"
-sed -i -E 's/((127\.0\.0\.1|::1)[[:space:]]+localhost )[a-zA-Z.](.*)/\1'"${hostname}"'\3/' /etc/hosts
+sed -i -E 's/((127\.0\.0\.1|::1)[[:space:]]+localhost )[a-zA-Z.]+(.*)/\1'"${hostname}"'\3/' /etc/hosts
 
 ## Git user config
 git config --global user.name "${git_name}"
